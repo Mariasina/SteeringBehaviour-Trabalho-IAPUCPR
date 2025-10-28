@@ -1,6 +1,7 @@
 package cars.engine;
 
 import cars.student.Setup;
+import cars.student.StudentCar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,6 +61,23 @@ public final class Window extends JFrame implements Runnable {
                 }
             }
         });
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char key = e.getKeyChar();
+                if ("W".equalsIgnoreCase("" + key)) {
+                    for (Car car : cars) {
+                        if (car instanceof StudentCar) {
+                            ((StudentCar) car).toggleWander();
+                        }
+                    }
+                }
+            }
+        });
+
+
+
         requestFocus();
         this.cars = new Setup().createCars();
     }
