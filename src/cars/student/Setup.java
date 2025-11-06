@@ -11,4 +11,5 @@ public class Setup {
     public List<Car> createCars() {
         return List.of(new StudentCar());
     }
+
 }

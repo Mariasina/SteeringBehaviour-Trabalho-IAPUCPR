@@ -3,6 +3,7 @@ package cars.student;
 import cars.engine.Car;
 import cars.engine.Vector2;
 import cars.engine.World;
+import jdk.jshell.spi.ExecutionControl;
 
 import java.awt.*;
 
@@ -147,5 +148,10 @@ public class StudentCar extends Car {
         // retorna o steering force para buscar esse ponto
         return seek(targetWorld);
 
+    }
+
+    private Vector2 obstacleAvoidance(){
+
+        return null;
     }
 }

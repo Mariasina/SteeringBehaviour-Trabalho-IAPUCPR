@@ -7,12 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import java.util.Random;
 
 public final class Window extends JFrame implements Runnable {
     public static final int INITIAL_WIDTH = 1024;
     public static final int INITIAL_HEIGHT = 768;
 
     private final List<Car> cars;
+    private List<Obstacle> obstacles;
     private Vector2 clickPos = null;
     private Vector2 mousePos = null;
     private boolean debugMode = true;
@@ -80,6 +82,8 @@ public final class Window extends JFrame implements Runnable {
 
         requestFocus();
         this.cars = new Setup().createCars();
+        this.obstacles = new java.util.ArrayList<>();
+
     }
 
     public static void main(String[] args) {
@@ -91,6 +95,17 @@ public final class Window extends JFrame implements Runnable {
         final var gameLoop = new Thread(this, "game-loop");
         gameLoop.setDaemon(true);
         gameLoop.start();
+
+        for (int i = 0; i < 3; i++) {
+            Obstacle obstacle = new Obstacle(settings -> {
+                settings.position(Vector2.vec2(0, 0));
+                settings.mass(3);
+            });
+        obstacles.add(obstacle);
+        obstacle.randomizePosition(getWidth(), getHeight());
+        }
+
+
     }
 
     @Override
@@ -152,6 +167,7 @@ public final class Window extends JFrame implements Runnable {
 
         // Draw cars
         cars.forEach(car -> car.draw(g2d, debugMode));
+        obstacles.forEach(obstacle -> obstacle.draw(g2d, debugMode));
 
         g2d.setFont(new Font("Arial", Font.PLAIN, 10));
         g2d.setColor(Color.DARK_GRAY);
