@@ -78,6 +78,20 @@ public final class Window extends JFrame implements Runnable {
             }
         });
 
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char key = e.getKeyChar();
+                if ("F".equalsIgnoreCase("" + key)) {
+                    for (Car car : cars) {
+                        if (car instanceof StudentCar) {
+                            ((StudentCar) car).toggleFollowPath();
+                        }
+                    }
+                }
+            }
+        });
+
 
 
         requestFocus();

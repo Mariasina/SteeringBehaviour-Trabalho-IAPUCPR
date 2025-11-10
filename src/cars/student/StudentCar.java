@@ -6,6 +6,10 @@ import cars.engine.World;
 import jdk.jshell.spi.ExecutionControl;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Vector;
+import java.util.List;
 
 import static cars.engine.Vector2.vec2;
 
@@ -38,11 +42,25 @@ public class StudentCar extends Car {
      */
 
     private boolean useWander = false; // false por padrão, modo normal
+    private boolean useFollowPath = false;
+    private List<Vector2> path = new ArrayList<>();
+    private int currentPathIndex = 0;
+
 
     @Override
     public Vector2 calculateSteering(final World world) {
         if (useWander) {
             return wander();
+        }
+
+        if(useFollowPath){
+            if (path.isEmpty()) {
+                for (int i = 0; i < 4; i++) {
+                    path.add(new Vector2(Math.random() * 800, Math.random() * 600));
+                }
+            }
+
+            return followPath();
         }
 
         Vector2 target = world.getClickPos();
@@ -70,6 +88,10 @@ public class StudentCar extends Car {
 
     public void toggleWander() {
         useWander = !useWander;
+    }
+
+    public void toggleFollowPath() {
+        useFollowPath = !useFollowPath;
     }
 
 
@@ -153,5 +175,24 @@ public class StudentCar extends Car {
     private Vector2 obstacleAvoidance(){
 
         return null;
+    }
+
+    private Vector2 followPath() {
+        if(currentPathIndex >= path.size())
+            currentPathIndex = 0;
+
+        Vector2 currentPosition = path.get(currentPathIndex);
+
+        Vector2 desired = Vector2
+                .subtract(currentPosition, getPosition())
+                .normalize()
+                .multiply(getMaxSpeed());
+
+        Vector2 steering = Vector2
+                .subtract(desired, getVelocity());
+
+        currentPathIndex++;
+
+        return Vector2.truncate(steering, getMaxForce());
     }
 }
