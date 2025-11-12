@@ -9,7 +9,8 @@ public class Setup {
      * Retorne uma lista com todos os carros que serão desenhados no exercício.
      */
     public List<Car> createCars() {
-        return List.of(new StudentCar());
+        return List.of(new StudentCar(), new StudentCar2());
     }
 
 }
+

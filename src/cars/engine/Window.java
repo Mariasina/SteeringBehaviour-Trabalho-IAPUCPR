@@ -65,28 +65,23 @@ public final class Window extends JFrame implements Runnable {
         });
 
         addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char key = e.getKeyChar();
-                if ("W".equalsIgnoreCase("" + key)) {
-                    for (Car car : cars) {
-                        if (car instanceof StudentCar) {
-                            ((StudentCar) car).toggleWander();
-                        }
+            @Override public void keyTyped(KeyEvent e) {
+                if ("W".equalsIgnoreCase(String.valueOf(e.getKeyChar()))) {
+                    for (Car c : cars) {
+                        if (c instanceof StudentCar)  ((StudentCar)  c).toggleWander();
+                        if (c instanceof StudentCar2) ((StudentCar2) c).toggleWander();
                     }
                 }
             }
         });
 
+
         addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char key = e.getKeyChar();
-                if ("F".equalsIgnoreCase("" + key)) {
-                    for (Car car : cars) {
-                        if (car instanceof StudentCar) {
-                            ((StudentCar) car).toggleFollowPath();
-                        }
+            @Override public void keyTyped(KeyEvent e) {
+                if ("F".equalsIgnoreCase(String.valueOf(e.getKeyChar()))) {
+                    for (Car c : cars) {
+                        if (c instanceof StudentCar)  ((StudentCar)  c).toggleFollowPath();
+                        if (c instanceof StudentCar2) ((StudentCar2) c).toggleFollowPath();
                     }
                 }
             }
