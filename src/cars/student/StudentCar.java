@@ -1,6 +1,7 @@
 package cars.student;
 
 import cars.engine.Car;
+import cars.engine.Obstacle;
 import cars.engine.Vector2;
 import cars.engine.World;
 import jdk.jshell.spi.ExecutionControl;
@@ -62,10 +63,10 @@ public class StudentCar extends Car {
             return wander();
         }
 
-        Vector2 avoidance = obstacleAvoidance(world);
-        if (avoidance.size() > 0.001) {
-            return avoidance;
-        }
+//        Vector2 avoidance = obstacleAvoidance(world);
+//        if (avoidance.size() > 0.001) {
+//            return avoidance;
+//        }
 
 
         final Vector2 target = world.getClickPos();
