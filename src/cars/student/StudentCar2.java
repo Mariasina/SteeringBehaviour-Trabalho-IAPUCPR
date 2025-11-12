@@ -37,17 +37,15 @@ public class StudentCar2 extends Car {
             double dist = Vector2.distance(getPosition(), mouse);
             double panic = 250.0;
             if (dist < panic) {
-                // no futuro: somar avoidance aqui (ou dar prioridade se houver obstáculo à frente)
+                // Avoidance vai aqui
+
                 return flee(mouse);
             }
         }
-
-        // 2) Wander se ligado
         if (useWander) {
             return wander();
         }
 
-        // 3) Sem perigo e sem wander: permanece parado
         return vec2();
     }
 
@@ -73,19 +71,10 @@ public class StudentCar2 extends Car {
         return seek(targetWorld);
     }
 
-    // usado apenas internamente pelo wander
     private Vector2 seek(Vector2 target) {
         Vector2 desired = Vector2.subtract(target, getPosition()).normalize().multiply(getMaxSpeed());
         Vector2 steering = Vector2.subtract(desired, getVelocity());
         return Vector2.truncate(steering, getMaxForce());
     }
 
-    // stub para o futuro
-    @SuppressWarnings("unused")
-    private Vector2 obstacleAvoidance(World world){
-        // TODO: quando implementar obstáculos de fato:
-        // - detectar segmento à frente (feelers)
-        // - se intersectar, aplicar força lateral
-        return vec2();
-    }
 }

@@ -22,61 +22,46 @@ public class StudentCar extends Car {
         );
     }
 
-    // --- Flags de modo ---
     private boolean useWander = false;
     private boolean useFollowPath = false;
 
-    // --- Path following ---
     private final List<Vector2> path = new ArrayList<>();
     private int currentPathIndex = 0;
-    private final double waypointRadius = 30; // distância para “considerar chegou”
-
-    // --- Wander state ---
-    private Vector2 wanderTarget = Vector2.byAngle(0);
-    private final double wanderRadius   = 50.0;
-    private final double wanderDistance = 100.0;
-    private final double wanderJitter   = 10.0;
 
     @Override
     public Vector2 calculateSteering(final World world) {
-        // 1) Follow path (se ligado) mantém prioridade, como estava
         if (useFollowPath) {
             if (path.isEmpty()) {
-                final int nPoints = 4;
-                for (int i = 0; i < nPoints; i++) {
-                    // usa dimensões do mundo em vez de números mágicos
-                    double x = Math.random() * world.getWidth()  - world.getWidth()  / 2.0;
-                    double y = Math.random() * world.getHeight() - world.getHeight() / 2.0;
-                    path.add(new Vector2(x, y));
+                for (int i = 0; i < 4; i++) {
+                    path.add(new Vector2(Math.random() * 800, Math.random() * 600));
                 }
             }
             return followPath();
         }
 
-        // 2) Clique tem prioridade sobre wander
-        final Vector2 click = world.getClickPos();
-        if (click != null) {
-            final double dist = Vector2.distance(getPosition(), click);
-            if (dist < 150) return arrive(click);
-            return seek(click);
-        }
-
-        // 3) Sem clique: opcionalmente vagueia
         if (useWander) {
             return wander();
         }
 
-        // 4) Sem alvo: não aplica força
-        return vec2();
+        final Vector2 target = world.getClickPos();
+        if (target == null) return vec2();
+
+        // Parte aonde iria o avoidable obstacle no método calculateSteering ;)
+
+        final double dist = Vector2.distance(getPosition(), target);
+        if (dist < 150) return arrive(target);
+        return seek(target);
     }
 
-    // Atalhos para Window
-    public void toggleWander()    { useWander = !useWander; }
-    public void toggleFollowPath(){ useFollowPath = !useFollowPath; }
+    public void toggleWander() { useWander = !useWander; }
+    public void toggleFollowPath() { useFollowPath = !useFollowPath; }
 
-    // ----------------- Behaviors -----------------
+
     private Vector2 seek(Vector2 target) {
-        Vector2 desired = Vector2.subtract(target, getPosition()).normalize().multiply(getMaxSpeed());
+        Vector2 desired = Vector2
+                .subtract(target, getPosition())
+                .normalize()
+                .multiply(getMaxSpeed());
         Vector2 steering = Vector2.subtract(desired, getVelocity());
         return Vector2.truncate(steering, getMaxForce());
     }
@@ -101,47 +86,38 @@ public class StudentCar extends Car {
         return Vector2.truncate(steering, getMaxForce());
     }
 
-    private Vector2 wander(){
-        // jitter aleatório
-        double jx = (Math.random() * 2 - 1) * wanderJitter;
-        double jy = (Math.random() * 2 - 1) * wanderJitter;
-        wanderTarget = wanderTarget.add(Vector2.vec2(jx, jy));
+    // Wander state
+    private Vector2 wanderTarget = Vector2.byAngle(0);
+    private double wanderRadius = 50.0;
+    private double wanderDistance = 100.0;
+    private double wanderJitter = 10.0;
 
-        // mantém no círculo
-        wanderTarget = wanderTarget.normalize().multiply(wanderRadius);
+    private Vector2 wander() {
+        double jitterX = (Math.random() * 2 - 1) * wanderJitter;
+        double jitterY = (Math.random() * 2 - 1) * wanderJitter;
+        wanderTarget = wanderTarget.add(Vector2.vec2(jitterX, jitterY))
+                .normalize()
+                .multiply(wanderRadius);
 
-        // leva o círculo à frente do carro
-        Vector2 aheadLocal = getDirection().multiply(wanderDistance);
-        Vector2 targetWorld = getPosition().add(aheadLocal).add(wanderTarget);
-
+        Vector2 targetLocal = wanderTarget.add(getDirection().multiply(wanderDistance));
+        Vector2 targetWorld = targetLocal.add(getPosition());
         return seek(targetWorld);
     }
 
-    private void maybeInitRandomPath(World world, int nPoints) {
-        if (!path.isEmpty()) return;
-        // use a janela atual para sortear dentro da área visível
-        double hw = world.getWidth() / 2.0;
-        double hh = world.getHeight() / 2.0;
-        for (int i = 0; i < nPoints; i++) {
-            path.add(new Vector2(
-                    (Math.random() * (hw * 1.6)) - hw * 0.8,  // um pouco além do meio
-                    (Math.random() * (hh * 1.6)) - hh * 0.8
-            ));
-        }
-        currentPathIndex = 0;
-    }
 
     private Vector2 followPath() {
-        if (path.isEmpty()) return vec2();
+        if (currentPathIndex >= path.size()) currentPathIndex = 0;
 
-        Vector2 wp = path.get(currentPathIndex);
+        Vector2 waypoint = path.get(currentPathIndex);
 
-        // troca de waypoint quando chega perto
-        if (Vector2.distance(getPosition(), wp) < waypointRadius) {
-            currentPathIndex = (currentPathIndex + 1) % path.size();
-            wp = path.get(currentPathIndex);
-        }
+        Vector2 desired = Vector2
+                .subtract(waypoint, getPosition())
+                .normalize()
+                .multiply(getMaxSpeed());
+        Vector2 steering = Vector2.subtract(desired, getVelocity());
 
-        return seek(wp);
+        currentPathIndex++;
+
+        return Vector2.truncate(steering, getMaxForce());
     }
 }

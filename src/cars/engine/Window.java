@@ -2,6 +2,7 @@ package cars.engine;
 
 import cars.student.Setup;
 import cars.student.StudentCar;
+import cars.student.StudentCar2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,7 +82,6 @@ public final class Window extends JFrame implements Runnable {
                 if ("F".equalsIgnoreCase(String.valueOf(e.getKeyChar()))) {
                     for (Car c : cars) {
                         if (c instanceof StudentCar)  ((StudentCar)  c).toggleFollowPath();
-                        if (c instanceof StudentCar2) ((StudentCar2) c).toggleFollowPath();
                     }
                 }
             }
