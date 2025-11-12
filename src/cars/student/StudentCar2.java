@@ -31,6 +31,9 @@ public class StudentCar2 extends Car {
 
     @Override
     public Vector2 calculateSteering(final World world) {
+        Vector2 steeringFlee = Vector2.vec2();
+        Vector2 steeringWander = Vector2.vec2();
+
         // 1) Flee do mouse (zona de pânico)
         final Vector2 mouse = world.getMousePos();
         if (mouse != null) {
@@ -39,14 +42,25 @@ public class StudentCar2 extends Car {
             if (dist < panic) {
                 // Avoidance vai aqui
 
-                return flee(mouse);
+                steeringFlee = flee(mouse);
             }
         }
+
         if (useWander) {
-            return wander();
+            steeringWander = wander();
         }
 
-        return vec2();
+        // Define pesos - testei com esses e ficou legal
+        double weightFlee = 1.0;
+        double weightWander = 0.3;
+
+        Vector2 blended = Vector2.add(
+            Vector2.vec2(),
+            steeringFlee.multiply(weightFlee),
+            steeringWander.multiply(weightWander)
+        );
+
+        return Vector2.truncate(blended, getMaxForce());
     }
 
     public void toggleWander() { useWander = !useWander; }

@@ -59,8 +59,19 @@ public class StudentCar extends Car {
             return followPath();
         }
 
-        if (useWander) {
-            return wander();
+        Vector2 steeringWander = useWander ? wander() : Vector2.vec2();
+        Vector2 steeringObstacle = obstacleAvoidance(world);
+        Vector2 steeringSeek = Vector2.vec2();
+
+        final Vector2 target = world.getClickPos();
+        if (target != null) {
+            double dist = Vector2.distance(getPosition(), target);
+
+            if (dist < 150) {
+                steeringSeek = arrive(target);
+            } else {
+                steeringSeek = seek(target);
+            }
         }
 
 //        Vector2 avoidance = obstacleAvoidance(world);
@@ -68,15 +79,20 @@ public class StudentCar extends Car {
 //            return avoidance;
 //        }
 
+        // Define pesos - testei com esses e ficou legal
+        double weightWander = useWander ? 0.2 : 0;
+        double weightAvoidance = 5.0;
+        double weightSeek = 1.0;
 
-        final Vector2 target = world.getClickPos();
-        if (target == null) return vec2();
+        Vector2 blendedSteering = Vector2.vec2();
+        blendedSteering = Vector2.add(
+            blendedSteering, 
+            steeringWander.multiply(weightWander), 
+            steeringObstacle.multiply(weightAvoidance), 
+            steeringSeek.multiply(weightSeek)
+        );
 
-        // Parte aonde iria o avoidable obstacle no método calculateSteering ;)
-
-        final double dist = Vector2.distance(getPosition(), target);
-        if (dist < 150) return arrive(target);
-        return seek(target);
+        return Vector2.truncate(blendedSteering, getMaxForce());
     }
 
     public void toggleWander() { useWander = !useWander; }
