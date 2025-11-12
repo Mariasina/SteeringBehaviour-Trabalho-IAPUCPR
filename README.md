@@ -5,20 +5,16 @@ Equipe: Caio Roque, Felipe Charello e Maria Carolina
 ### Projeto que implementa comportamentos clássicos de Steering Behaviour em uma simulação de carros de corrida simples. O objetivo foi implementar os comportamentos mais conhecidos, sendo eles seek, arrive, flee, wander, obstacle avoidance e path following. 
 
 ## Principais funcionalidades
-Para o projeto foram criados dois carros com combinações de comportamentos diferentes: 
+### Para o projeto foram criados dois carros com combinações de comportamentos diferentes: 
 1. StudentCar: seek, arrive, wander e obstacle avoidance (obs: obstacle avoidance mas não está ativado na simulação pois não está funcionando 100%). 
-2. StudentCar2: flee (do cursor), wander e seek. 
-Motor físico simples: forças → impulso → aceleração → velocidade → posição.
-Visualização em Java2D com opção de debug (vetores desenhados).
-Controles via mouse e teclado para interagir com a simulação.
-Comportamentos (explicação simples e direta)
-Cada descrição contém a ideia, como é calculado (em termos simples) e quando usar.
+2. StudentCar2: flee, wander e seek. 
 
-Seek — ir diretamente para um alvo
+## Comportamentos 
 
-Ideia: apontar na direção do alvo e tentar assumir a velocidade máxima nessa direção.
-Como funciona (resumido): calcula-se a direção até o alvo, multiplica por maxSpeed → velocidade desejada. Steering = velocidade desejada − velocidade atual. Trunca pelo maxForce.
-Uso: clicar na tela para fazer o carro ir até o ponto.
+### Seek — ir atrás de um alvo 
+
+No comportamento seek, é recebido um alvo, que nesse caso é a última posição em que o mouse clicou, assim, um cálculo para definir um Vetor de movimentação é realizado da posição do carro até a do cliquepontar na direção do alvo e tentar assumir a velocidade máxima nessa direção.
+
 Arrive — chegar desacelerando
 
 Ideia: igual ao seek, mas reduz a velocidade conforme se aproxima para parar suavemente.
@@ -43,3 +39,4 @@ Follow path — seguir pontos (waypoints)
 
 Ideia: ter uma lista de pontos e sempre ir para o próximo; ao chegar muda para o seguinte.
 Como funciona: seek para o waypoint atual; se estiver dentro de um raio pequeno, avança o índice (circular).
+
