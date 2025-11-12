@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Random;
 
 public final class Window extends JFrame implements Runnable {
-    public static final int INITIAL_WIDTH = 1024;
-    public static final int INITIAL_HEIGHT = 768;
+        public static final int INITIAL_WIDTH = 1024;
+        public static final int INITIAL_HEIGHT = 768;
 
     private final List<Car> cars;
     private List<Obstacle> obstacles;
@@ -145,7 +145,7 @@ public final class Window extends JFrame implements Runnable {
     private void update(final double secs) {
         cars.forEach(car -> car.update(
             new World(
-                    secs, car, cars,
+                    secs, car, cars, obstacles,
                     mousePos, clickPos,
                     getWidth(), getHeight()
                 )
