@@ -9,34 +9,22 @@ Equipe: Caio Roque, Felipe Charello e Maria Carolina
 1. StudentCar: seek, arrive, wander e obstacle avoidance (obs: obstacle avoidance mas não está ativado na simulação pois não está funcionando 100%). 
 2. StudentCar2: flee, wander e seek. 
 
-## Comportamentos 
+## Comportamentos
 
-### Seek — ir atrás de um alvo 
+### Seek
+No comportamento *seek*, é recebido um alvo, que nesse caso é a última posição em que o mouse clicou. A partir disso, é calculado um vetor de movimentação que vai da posição atual do carro até a posição do clique, apontando na direção do alvo e tentando atingir a velocidade máxima nessa direção.
 
-No comportamento seek, é recebido um alvo, que nesse caso é a última posição em que o mouse clicou, assim, um cálculo para definir um Vetor de movimentação é realizado da posição do carro até a do cliquepontar na direção do alvo e tentar assumir a velocidade máxima nessa direção.
+### Arrive
+No comportamento *arrive*, o carro também busca um alvo, assim como no *seek*, mas reduz gradualmente sua velocidade conforme se aproxima do destino. É calculada a distância até o alvo, e, se estiver dentro de uma zona de desaceleração, a velocidade desejada é ajustada proporcionalmente à distância. Dessa forma, o carro chega suavemente e para exatamente no ponto desejado.
 
-Arrive — chegar desacelerando
+### Flee
+No comportamento *flee*, o carro faz o oposto do *seek*: em vez de se mover em direção ao alvo, ele se afasta dele. É calculado um vetor na direção contrária ao ponto de perigo (por exemplo, o cursor do mouse), e o carro tenta atingir sua velocidade máxima nessa direção. Esse comportamento é usado quando o carro precisa fugir ao detectar algo próximo, como em uma “zona de pânico”.
 
-Ideia: igual ao seek, mas reduz a velocidade conforme se aproxima para parar suavemente.
-Como funciona: calcula distância ao alvo; se estiver dentro de uma "zona de desaceleração" reduz a velocidade desejada proporcionalmente à distância; aplica steering como no seek.
-Uso: quando queremos que o carro pare no destino (evita overshoot).
-Flee — fugir de um alvo
+### Wander
+No comportamento *wander*, o carro se move de forma aparentemente aleatória, mas ainda suave e natural. É projetado um ponto alvo à frente do carro, e esse ponto muda levemente a cada instante através de pequenas variações (jitter). O carro então aplica o *seek* para esse alvo em movimento, resultando em um deslocamento fluido e imprevisível.
 
-Ideia: oposto do seek: mover-se para longe de um ponto de perigo (ex.: cursor).
-Como funciona: calcula a direção contrária ao perigo, define velocidade desejada = maxSpeed nessa direção, steering = desired − velocity.
-Uso: StudentCar2 foge do cursor quando este se aproxima (zona de pânico).
-Wander — andar aleatoriamente, mas suave
+### Obstacle Avoidance
+No comportamento *obstacle avoidance*, o carro tenta evitar colisões detectando obstáculos à frente dentro de uma área de detecção (como um raio ou retângulo). Para cada obstáculo, é calculada a projeção à frente e a distância lateral. Se o obstáculo estiver dentro da região de detecção, o carro escolhe o mais próximo e gera um vetor de desvio para um ponto lateral, contornando o obstáculo. Nesta implementação, os obstáculos são tratados como pontos simples.
 
-Ideia: gerar um ponto alvo projetado à frente do carro; esse ponto muda suavemente (jitter) a cada passo para produzir curvas naturais.
-Como funciona: mantém um vetor alvo circular que recebe pequenos ruídos; o alvo é projetado à frente por uma distância fixa; aplica-se seek para esse alvo.
-Uso: movimento autônomo sem objetivo fixo.
-Obstacle avoidance — desviar de obstáculos simples
-
-Ideia: detectar obstáculos à frente num retângulo/raio e escolher um ponto lateral para contornar.
-Como funciona: para cada obstáculo calcula-se a projeção à frente (dot) e a distância lateral (cross-like). Se está dentro da região de detecção, escolhe o obstáculo mais próximo e gera um steering para um ponto lateral (offset).
-Observação: implementação trata obstáculos como pontos; melhorar consideraria raio/size e predição de colisão.
-Follow path — seguir pontos (waypoints)
-
-Ideia: ter uma lista de pontos e sempre ir para o próximo; ao chegar muda para o seguinte.
-Como funciona: seek para o waypoint atual; se estiver dentro de um raio pequeno, avança o índice (circular).
-
+### Follow Path
+No comportamento *follow path*, o carro segue uma sequência de pontos (waypoints). Ele aplica o *seek* em direção ao ponto atual, e, ao chegar suficientemente perto (dentro de um pequeno raio), passa a buscar o próximo ponto da lista. Quando chega ao final, o índice retorna ao início, permitindo seguir o caminho continuamente.
