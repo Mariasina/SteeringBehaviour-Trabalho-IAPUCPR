@@ -43,7 +43,7 @@ public class StudentCar extends Car {
 
     private boolean useWander = false; // false por padrão, modo normal
     private boolean useFollowPath = false;
-    private List<Vector2> path = new ArrayList<>();
+    private List<Vector2> pathFollowTargets = new ArrayList<>();
     private int currentPathIndex = 0;
 
 
@@ -54,9 +54,9 @@ public class StudentCar extends Car {
         }
 
         if(useFollowPath){
-            if (path.isEmpty()) {
+            if (pathFollowTargets.isEmpty()) {
                 for (int i = 0; i < 4; i++) {
-                    path.add(new Vector2(Math.random() * 800, Math.random() * 600));
+                    pathFollowTargets.add(new Vector2(100 * i, 100 * i));
                 }
             }
 
@@ -178,21 +178,35 @@ public class StudentCar extends Car {
     }
 
     private Vector2 followPath() {
-        if(currentPathIndex >= path.size())
-            currentPathIndex = 0;
+        if (pathFollowTargets.isEmpty()) return Vector2.vec2();
 
-        Vector2 currentPosition = path.get(currentPathIndex);
+        Vector2 carPosition = getPosition();
+        Vector2 currentTarget = pathFollowTargets.get(currentPathIndex);
+        double distanceToTarget = Vector2.distance(carPosition, currentTarget);
+        double targetRadius = 15.0;
+
+        if (distanceToTarget < targetRadius) {
+            currentPathIndex++;
+
+            if (currentPathIndex >= pathFollowTargets.size()) {
+                currentPathIndex = 0;
+            }
+
+        }
+
+        currentTarget = pathFollowTargets.get(currentPathIndex);
+        System.out.println(currentPathIndex + ": " + currentTarget);
+        System.out.println(carPosition);
 
         Vector2 desired = Vector2
-                .subtract(currentPosition, getPosition())
+                .subtract(currentTarget, getPosition())
                 .normalize()
                 .multiply(getMaxSpeed());
 
         Vector2 steering = Vector2
                 .subtract(desired, getVelocity());
 
-        currentPathIndex++;
-
         return Vector2.truncate(steering, getMaxForce());
     }
+
 }
