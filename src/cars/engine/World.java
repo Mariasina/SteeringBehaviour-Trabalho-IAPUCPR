@@ -7,6 +7,7 @@ import static cars.engine.Car.distance;
 public final class World {
     private final Car current;
     private final List<Car> cars;
+    private final List<Obstacle> obstacles;
     private final Vector2 mousePos;   // absolute scene coords; may be null
     private final Vector2 clickPos;   // center-relative coords; may be null
     private final double secs;
@@ -17,12 +18,14 @@ public final class World {
     public World(double secs,
                  Car current,
                  List<Car> cars,
+                 List<Obstacle> obstacles,
                  Vector2 mousePos,
                  Vector2 clickPos,
                  double width,
                  double height) {
         this.current = current;
         this.cars = cars;
+        this.obstacles = obstacles;
         this.mousePos = mousePos;
         this.clickPos = clickPos;
         this.secs = secs;
@@ -54,7 +57,9 @@ public final class World {
     public double getSecs() {
         return secs;
     }
-
     public double getWidth() { return width; }
     public double getHeight() { return height; }
+    public List<Obstacle> getObstacles() {
+        return obstacles;
+    }
 }

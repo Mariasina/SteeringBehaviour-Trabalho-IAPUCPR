@@ -150,7 +150,7 @@ public final class Window extends JFrame implements Runnable {
     private void update(final double secs) {
         cars.forEach(car -> car.update(
             new World(
-                    secs, car, cars,
+                    secs, car, cars, obstacles,
                     mousePos, clickPos,
                     getWidth(), getHeight()
                 )
