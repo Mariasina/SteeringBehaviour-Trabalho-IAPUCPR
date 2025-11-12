@@ -190,11 +190,9 @@ public class StudentCar extends Car {
         Obstacle closestObstacle = null;
         double closestDist = Double.MAX_VALUE;
 
-        // Detecta obstáculo mais próximo à frente
         for (Obstacle obstacle : obstacles) {
             Vector2 toObstacle = Vector2.subtract(obstacle.getPosition(), carPosition);
 
-            // Projeção na frente e lateral — sem cross
             double forwardDist = carDirection.dot(toObstacle);
             double sideDist = toObstacle.x * carDirection.y - toObstacle.y * carDirection.x;
 
@@ -208,19 +206,15 @@ public class StudentCar extends Car {
 
         if (closestObstacle == null) return Vector2.vec2();
 
-        // Calcula se o obstáculo está à direita (positivo) ou esquerda (negativo)
         Vector2 toClosest = Vector2.subtract(closestObstacle.getPosition(), carPosition);
         double side = toClosest.x * carDirection.y - toClosest.y * carDirection.x;
 
-        // Define o ponto de desvio lateral (50px)
         double sideSign = (side > 0) ? 1.0 : -1.0;
         double lateralOffset = 50.0 * sideSign;
 
-        // Cria um vetor lateral (direita do carro)
         Vector2 right = Vector2.vec2(-carDirection.y, carDirection.x);
         Vector2 avoidTarget = carPosition.add(right.multiply(lateralOffset));
 
-        // Aplica a lógica igual ao flee()
         Vector2 desired = Vector2
                 .subtract(avoidTarget, carPosition)
                 .normalize()
